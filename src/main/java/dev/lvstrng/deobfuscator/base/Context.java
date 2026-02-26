@@ -2,7 +2,7 @@ package dev.lvstrng.deobfuscator.base;
 
 import dev.lvstrng.deobfuscator.base.transform.Transformer;
 import dev.lvstrng.deobfuscator.base.tree.ClassWrapper;
-import dev.lvstrng.deobfuscator.base.tree.HierarchyBuilder;
+import dev.lvstrng.deobfuscator.base.tree.Hierarchy;
 import dev.lvstrng.deobfuscator.base.util.ClassUtils;
 import org.objectweb.asm.tree.ClassNode;
 
@@ -24,13 +24,13 @@ public class Context {
     private final Map<String, byte[]>       resources = new HashMap<>();
 
     private LibReader               libReader;
-    private HierarchyBuilder hierarchyBuilder;
+    private Hierarchy hierarchy;
     private List<Transformer> transformers = new ArrayList<>();
 
     public void execute() {
         // ---------- INIT --------------
         this.libReader = new LibReader(this);
-        this.hierarchyBuilder = new HierarchyBuilder(this);
+        this.hierarchy = new Hierarchy(this);
 
         readInput();
         transform();
@@ -72,7 +72,7 @@ public class Context {
             throw new RuntimeException(e);
         }
 
-        hierarchyBuilder.build();
+        hierarchy.build();
     }
 
     private void writeOutput() {

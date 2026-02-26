@@ -1,10 +1,12 @@
 package dev.lvstrng.deobfuscator.base.tree;
 
+import dev.lvstrng.deobfuscator.base.analysis.interpreter.TypedInterpreter;
+import dev.lvstrng.deobfuscator.base.analysis.interpreter.TypedValue;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldNode;
-import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.*;
+import org.objectweb.asm.tree.analysis.Analyzer;
+import org.objectweb.asm.tree.analysis.AnalyzerException;
+import org.objectweb.asm.tree.analysis.Frame;
 
 import java.lang.reflect.Modifier;
 import java.util.*;
@@ -17,6 +19,24 @@ public class ClassWrapper {
 
     public ClassWrapper(ClassNode core, boolean lib) {
         this.core(core, lib);
+    }
+
+    public Map<AbstractInsnNode, Frame<TypedValue>> frames(MethodNode method) {
+        try {
+            var frames = new HashMap<AbstractInsnNode, Frame<TypedValue>>();
+            var frameArr = new Analyzer<>(new TypedInterpreter()).analyzeAndComputeMaxs(name(), method);
+
+            for(int i = 0; i < method.instructions.size(); i++) {
+                var insn = method.instructions.get(i);
+                var frame = frameArr[i];
+
+                frames.put(insn, frame);
+            }
+
+            return frames;
+        } catch (AnalyzerException _) {}
+
+        return null;
     }
 
     public Optional<MethodNode> findMethod(String name, String desc) {

@@ -6,7 +6,7 @@ import org.objectweb.asm.ClassWriter;
 public class Entrypoint {
     public static void main(String[] args) {
         Context.of()
-            .input("zkm.jar")
+            .input("in.jar")
             .output("out.jar")
             .transformers( // add your transformers here
             )

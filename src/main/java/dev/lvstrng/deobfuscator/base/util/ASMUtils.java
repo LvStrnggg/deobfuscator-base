@@ -115,4 +115,12 @@ public class ASMUtils implements Opcodes {
     public static boolean isArrayStore(int opcode) {
         return opcode >= IASTORE && opcode <= SASTORE;
     }
+
+    public static boolean isReturn(int opcode) {
+        return opcode >= IRETURN && opcode <= RETURN;
+    }
+
+    public static boolean isReturn(AbstractInsnNode insn) {
+        return isReturn(insn.getOpcode());
+    }
 }
